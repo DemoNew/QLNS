@@ -221,7 +221,9 @@ namespace ThuctapNhom
         //}
         private void btnthem_Click(object sender, EventArgs e)
         {
-            
+            FormThemNanhVien them = new FormThemNanhVien();
+            this.Hide();
+            them.Show();
         }
 
         private void btnthoat_Click(object sender, EventArgs e)
@@ -233,12 +235,69 @@ namespace ThuctapNhom
 
         private void btnsuanv_Click(object sender, EventArgs e)
         {
-            
+            if (txtID.Text == "")
+            {
+                MessageBox.Show("Bạn chưa chọn bản ghi nào");
+                return;
+            }
+            txtdiachi.Enabled = true;
+            txtdienthoai.Enabled = true;
+            txtemail.Enabled = true;
+            txthoten.Enabled = true;
+            txtquequan.Enabled = true;
+            txtsoCMND.Enabled = true;
+            dtpngaysinh.Enabled = true;
+            cmbChucVu.Enabled = true;
+            cmbPhongBan.Enabled = true;
+            btnthemnv.Enabled = false;
+            btnsuanv.Enabled = false;
+            btnxoanv.Enabled = false;
+            btCapNhat.Enabled = true;
+            btnHuy.Enabled = true;
+            dvgnhanvien.Enabled = false;
         }
 
         private void btCapNhat_Click(object sender, EventArgs e)
         {
-            
+            if (isEmpty()) return;
+            NhanVien_obj nv = new NhanVien_obj();
+            nv.IDNV = txtID.Text;
+            nv.hotenNV = txthoten.Text;
+            nv.ngaysinhNV = dtpngaysinh.Value;
+            nv.emailNV = txtemail.Text;
+            nv.dienthoaiNV = txtdienthoai.Text;
+            nv.quequanNV = txtquequan.Text;
+            nv.diachiNV = txtdiachi.Text;
+            nv.soCMNDNV = txtsoCMND.Text;
+            nv.CV_IDNV = cmbChucVu.SelectedValue.ToString();
+            nv.PB_IDNV = cmbPhongBan.SelectedValue.ToString();
+
+            NhanVienBus bus = new NhanVienBus();
+            int ret;
+            ret = bus.update(nv);
+            bus.close();
+            if (ret < 0)
+            {
+                MessageBox.Show("Không sửa được dữ liệu ", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            MessageBox.Show("Sửa thành công", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            txtdiachi.Enabled = false;
+            txtdienthoai.Enabled = false;
+            txtemail.Enabled = false;
+            txthoten.Enabled = false;
+            txtquequan.Enabled = false;
+            txtsoCMND.Enabled = false;
+            dtpngaysinh.Enabled = false;
+            cmbChucVu.Enabled = false;
+            cmbPhongBan.Enabled = false;
+            btnthemnv.Enabled = true;
+            btnsuanv.Enabled = true;
+            btnxoanv.Enabled = true;
+            btCapNhat.Enabled = false;
+            btnHuy.Enabled = false;
+            dvgnhanvien.Enabled = true;
+
         }
 
         private void btnxoanv_Click(object sender, EventArgs e)
@@ -277,12 +336,52 @@ namespace ThuctapNhom
 
         private void dvgnhanvien_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            
+            string gt = this.dvgnhanvien.CurrentRow.Cells[2].Value.ToString().Trim();
+            if (gt == "Nam")
+            {
+                rdbnam.Checked = true;
+
+            }
+            else if (gt == "Nữ")
+            {
+                rdbnu.Checked = true;
+
+            }
+            txtID.DataBindings.Clear();
+            txtID.DataBindings.Add("Text", dvgnhanvien.DataSource, "ID");
+            txthoten.DataBindings.Clear();
+            txthoten.DataBindings.Add("Text", dvgnhanvien.DataSource, "hoten");
+            dtpngaysinh.DataBindings.Clear();
+            dtpngaysinh.DataBindings.Add("Text", dvgnhanvien.DataSource, "ngaysinh");
+            txtquequan.DataBindings.Clear();
+            txtquequan.DataBindings.Add("Text", dvgnhanvien.DataSource, "quequan");
+            txtdiachi.DataBindings.Clear();
+            txtdiachi.DataBindings.Add("Text", dvgnhanvien.DataSource, "diachi");
+            txtsoCMND.DataBindings.Clear();
+            txtsoCMND.DataBindings.Add("Text", dvgnhanvien.DataSource, "soCMND");
+            txtemail.DataBindings.Clear();
+            txtemail.DataBindings.Add("Text", dvgnhanvien.DataSource, "email");
+            txtdienthoai.DataBindings.Clear();
+            txtdienthoai.DataBindings.Add("Text", dvgnhanvien.DataSource, "dienthoai");
+            cmbChucVu.DataBindings.Clear();
+            cmbChucVu.DataBindings.Add("Text", dvgnhanvien.DataSource, "chucvu");
+            cmbPhongBan.DataBindings.Clear();
+            cmbPhongBan.DataBindings.Add("Text", dvgnhanvien.DataSource, "phongban");
         }
 
         private void txtTimKiem_TextChanged(object sender, EventArgs e)
         {
-           
+            try
+            {
+                dt.Clear();
+                connect();
+                getdata();
+                disconect();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Lỗi");
+            }
         }
 
         private void btnHuy_Click(object sender, EventArgs e)
